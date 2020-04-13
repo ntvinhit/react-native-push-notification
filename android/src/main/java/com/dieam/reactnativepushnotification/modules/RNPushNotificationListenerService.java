@@ -116,7 +116,7 @@ public class RNPushNotificationListenerService extends FirebaseMessagingService 
             bundle.putString("id", String.valueOf(randomNumberGenerator.nextInt()));
         }
 
-        Boolean isForeground = isApplicationInForeground();
+        boolean isForeground = isApplicationInForeground();
 
         RNPushNotificationJsDelivery jsDelivery = new RNPushNotificationJsDelivery(context);
         bundle.putBoolean("foreground", isForeground);
@@ -130,9 +130,11 @@ public class RNPushNotificationListenerService extends FirebaseMessagingService 
 
         Log.v(LOG_TAG, "sendNotification: " + bundle);
 
-        Application applicationContext = (Application) context.getApplicationContext();
-        RNPushNotificationHelper pushNotificationHelper = new RNPushNotificationHelper(applicationContext);
-        pushNotificationHelper.sendToNotificationCentre(bundle);
+        if (!isForeground) {
+            Application applicationContext = (Application) context.getApplicationContext();
+            RNPushNotificationHelper pushNotificationHelper = new RNPushNotificationHelper(applicationContext);
+            pushNotificationHelper.sendToNotificationCentre(bundle);
+        }
     }
 
     private boolean isApplicationInForeground() {
